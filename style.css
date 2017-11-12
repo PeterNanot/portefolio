@@ -1,0 +1,104 @@
+
+/* CSS */
+body        {
+    width:100%;
+    margin:0px;
+    min-width:600px;
+    max-width:1504px;
+    }
+
+#conteneur          {
+        width: 980px;
+        margin:0;
+        }
+
+/* Header  */
+
+#haut               {height: auto; padding-top: 20px;}
+#menu               {
+    right:-50%;
+    margin: 0;
+    width: auto;
+    text-align: center;
+    height: 50px;
+    line-height: 50px;
+    }
+
+#menu li            {list-style-type: none; display: inline-block; margin: 5px;}
+#menu li a          {
+    border-style: solid;
+    padding: 10px;
+    margin: 20px;
+    text-decoration: none;
+    transition: color .5s ease-in;
+    -webkit-transition: color .5s ease-in;
+    -moz-transition: color .5s ease-in;
+    -o-transition: color .5s ease-in;
+    }
+
+#menu li a:hover    {color: darkgreen;}
+ul                  {margin: 0; padding: 0;}
+
+/* Bannière  */
+
+#banniere            {
+    background:url(theme/mainBackground.jpg) no-repeat;
+    padding:0;
+    margin-top:20px;
+    margin-bottom:20px;
+    width:1504px;
+    height:400px;
+    text-align: center;
+    }
+
+#banniere p          {
+    border-style: solid;
+    padding: 15px;
+    }
+
+/* Contenu */
+
+#contenu {
+    right:-50%;
+    margin:10px;
+    }
+
+/* Sidebar */
+
+#sb                 {
+    list-style:none;
+    background-color: darkgreen;
+    width: 150px;
+    height: auto;
+    padding: 10px;
+    margin: auto;
+    text-align: center;
+    float: right;
+    border-radius: 20px 20px 20px 20px;
+    -webkit-border-radius: 20px 20px 20px 20px;
+    -moz-border-radius: 20px 20px 20px 20px;
+    -o-border-radius: 20px 20px 20px 20px;
+    }
+
+#sb li              {
+    width:150px;
+    height:90px;
+    }
+
+/*  Footer  */
+
+#pdp                {
+    width: 600px;
+    text-align: center;
+    background-color: black;
+    float: left;
+    height: auto;
+    margin:10px;
+    padding: 0;
+    border-radius: 20px 20px 20px 20px;
+    -webkit-border-radius: 20px 20px 20px 20px;
+    -moz-border-radius: 20px 20px 20px 20px;
+    -o-border-radius: 20px 20px 20px 20px;
+}
+
+#pdp p              {color: aliceblue; margin: 10px;}
