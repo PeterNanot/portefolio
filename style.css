@@ -10,26 +10,27 @@ body        {
         }
 
 /* Header  */
+#haut                 {
+    height: auto;
+    position: fixed;
+}
 
-#haut               {height: auto; padding-top: 20px;}
-#menu               {
+#menu                {
     text-align: center;
+    background-color: white;
     }
+
 
 #menu li            {
     list-style-type: none;
     display: inline-block;
-    padding: 10px;
-    margin: 15px;
 }
 
 #menu li a          {
     background-color: black;
     color: white;
-    border-style: solid;
-    padding: 10px;
-    margin: 20px;
     text-decoration: none;
+    padding: 20px;
     }
 
 #menu li a:hover    {
@@ -56,11 +57,31 @@ body        {
 
 /* Contenu */
 
-#contenu {
+#contenu             {
     display: inline-block;
     width: 600px;
     margin:10px;
     }
+
+#contenu h4         {
+    text-transform: uppercase;
+    
+}
+
+#contenu article     {
+    border-style: solid;
+    margin: 5px;
+    padding: 0 0 0 10px;
+    border-color: white;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -o-border-radius: 10px;
+}
+
+#contenu article:hover{
+    border-color: black;
+}
 
 /*  Aside  */
 
@@ -76,7 +97,7 @@ body        {
     display: block;
 }
 
-.logo       {
+.logo                {
     width: 250px;
     height: 100px
     border-radius: 20px;
@@ -85,7 +106,7 @@ body        {
     -o-border-radius: 20px;
 }
 
-.logo:hover {
+.logo:hover         {
     border-style: ridge;
 }
 
