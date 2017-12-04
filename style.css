@@ -1,8 +1,14 @@
 
+:root {
+  --main-bg-color: #d8d8d8;
+  --second-main-color: #31353d;
+}
+
 /* CSS */
 body        {
     margin:0px;
-    font-family: fantasy;
+    font: 400 14px/24px Arial, "Times New Roman", sans-serif;
+    background-color: var(--main-bg-color);
     }
 
 #conteneur          {
@@ -33,6 +39,10 @@ body        {
     color: white;
     text-decoration: none;
     padding: 10px;
+    border-radius: 0 0 10px 10px;
+    -webkit-border-radius: 0 0 10px 10px;
+    -moz-border-radius: 0 0 10px 10px;
+    -o-border-radius: 0 0 10px 10px;
     }
 
 #menu li a:hover    {
@@ -40,16 +50,18 @@ body        {
     color: black;
     padding: 20px 10px 10px 10px;
     margin-top: 50px;
+    top: 10px;
 }
 #ul                 {margin: 0; padding: 15px;}
 
 /* Bannière  */
 
 #banniere            {
-    background:url(theme/mainBackground.jpg) no-repeat;
+    background:url(theme/BG-try-01.jpeg) no-repeat;
+    background-size: 100% auto;
     padding:0;
-    margin-bottom:20px;
-    height:400px;
+    margin-top: -16px;
+    height:750px;
     text-align: center;
     }
 
@@ -62,27 +74,24 @@ body        {
 
 #contenu             {
     display: inline-block;
-    margin:10px;
     }
 
 #contenu h4         {
     width: 700px;
+    border-bottom : 3px solid black;
+    border-bottom-color: linear-gradient(60deg, black, var(--main-bg-color));
     text-transform: uppercase;
     margin-bottom: 5px;
     padding: 10px;
-    background-color: gray;
-    border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    -o-border-radius: 5px;
-    
+    background-image:linear-gradient(60deg, white, var(--main-bg-color));
 }
 
 #contenu h5         {
     width: 650px;
-    margin: 0;
+    margin-left: 15px;
     padding: 5px;
-    background-color: darkslategrey;
+    color: dimgray;
+    background-color: var(--second-main-color);
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -90,10 +99,12 @@ body        {
 }
 
 #contenu article     {
+    background-color: white;
     border-style: solid;
+    border-width: 2px;
     margin: 5px;
     padding: 0 0 0 10px;
-    border-color: white;
+    border-color: var(--main-bg-color);
     border-radius: 10px;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
@@ -116,8 +127,10 @@ body        {
 }
 
 .logo                {
-    width: 250px;
-    height: 100px
+    width: 150px;
+    height: 60px;
+    border-style: groove;
+    border-color: var(--main-bg-color);
     border-radius: 20px;
     -webkit-border-radius: 20px;
     -moz-border-radius: 20px;
@@ -125,30 +138,20 @@ body        {
 }
 
 .logo:hover         {
-    border-style: ridge;
+    border-color: black;
 }
 
 /*  Footer  */
 
 #footer             {
-    background-color: #31353d;
+    background-color: var(--second-main-color);
     width: 100%;
     float: left;
-    padding: 90px 0 60px;
+    padding: 50px 0 50px;
 }
 
 #adresse p            {
     color: dimgray;
     text-transform: uppercase;
     margin-left: 30px;
-}
-
-#contenuTemporaire p    {
-    text-decoration-style: double;
-    text-align: center;
-    border-style: solid;
-    margin-left: 100px;
-    padding: 200px;
-    height: 400px;
-    width: 600px;
 }
