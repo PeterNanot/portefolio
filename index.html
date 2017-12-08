@@ -3,11 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css" />
-    <script type="text/javascript" src="script.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>        
+        function sourison(event)
+        {
+            
+            var x = event.clientX;
+            var y = event.clientY;
+            var hauteur = document.getElementById("canvas").offsetHeight;
+            var largeur = document.getElementById("canvas").offsetWidth;
+            var element = event.target.children.item(0);
+            if (element.id === "NO") {
+                element.style.animation = "animationcubeNO 3s linear alternate infinite";
+            } else if (element.id === "NE") {
+                element.style.animation = "animationcubeNE 3s linear alternate infinite";
+            } else if (element.id === "SO") {
+                element.style.animation = "animationcubeSO 3s linear alternate infinite";
+            } else {
+                element.style.animation = "animationcubeSE 3s linear alternate infinite";
+            }
+            
+            
+            document.getElementById('coordonnes').value = x + ', ' + y + ', ' + hauteur + ', ' + largeur;            
+        }
+        
+        function sourisout(event)
+        {
+            var element = event.target.children.item(0);
+            element.style.animation = "none";
+        }
+        
+    </script>
     <title>PorteFolio</title>
 </head>
     <body>
     <div id="conteneur">
+        <nav id="banniere">
+            <div id="canvas">
+                <div onmouseover="sourison(event)" onmouseleave="sourisout(event)" id="canNO">
+                    <article id="NO" class="test"></article>
+                </div>
+                <div onmouseover="sourison(event)" onmouseleave="sourisout(event)" id="canNE">
+                    <article id="NE" class="test"></article>
+                </div>
+                <div onmouseover="sourison(event)" onmouseleave="sourisout(event)" id="canSO">
+                    <article id="SO" class="test"></article>
+                </div>
+                <div onmouseover="sourison(event)" onmouseleave="sourisout(event)" id="canSE">
+                    <article id="SE" class="test"></article>
+                </div>
+            </div>
+            <article id="textbanniere">
+                <h1><br>Hello World !</h1>
+                <h2>Peter Nanot</h2>
+                <p>
+                    Développeur Web.
+                </p>
+            <div id="info">
+
+                Coordonnées de la souris : <input type="text" id="coordonnes" value="inconnues" readonly="readonly" />
+
+            </div>
+            </article>
+            
         <header id="haut">
                <nav id="menu">
                 <ul>
@@ -17,14 +75,6 @@
                 </ul>
                </nav>
         </header>
-        <nav id="banniere">
-            <article>
-                <h1><br>Hello World !</h1>
-                <h2>Peter Nanot</h2>
-                <p>
-                    Développeur Web.
-                </p>
-            </article>
         </nav>
         <section id="contenu">
             <p id="presentation"><br></p>
@@ -91,18 +141,16 @@
                     Descriptions.
                 </p>
             </article>
-            <div id="overlay"></div>
+            
         </section>
-        <!-- Aside -->
-
-        <aside id="sidebar">
+            <aside id="sidebar">
             <nav>
                 <ul>
                     <li><a href="https://fr.linkedin.com/in/peter-nanot-8332a9129"><img class="logo" src="theme/logo-linkedin-button.png" alt="Linkedin"></a></li>
                     <li><a href="https://drive.google.com/file/d/1H6Iwr5D-AURAP_R6V9fO6krlo4sy4e2w/view?usp=sharing"><img class="logo" src="theme/logo-dl-CV-button.png" alt="Curriculum Vitae"></a></li>
                 </ul>
             </nav>
-        </aside>
+            </aside>
 
                
         
