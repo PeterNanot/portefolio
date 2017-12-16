@@ -4,66 +4,21 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script>        
-        function sourison(event)
-        {
-            
-            var x = event.clientX;
-            var y = event.clientY;
-            var hauteur = document.getElementById("canvas").offsetHeight;
-            var largeur = document.getElementById("canvas").offsetWidth;
-            var element = event.target.children.item(0);
-            if (element.id === "NO") {
-                element.style.animation = "animationcubeNO 3s linear alternate infinite";
-            } else if (element.id === "NE") {
-                element.style.animation = "animationcubeNE 3s linear alternate infinite";
-            } else if (element.id === "SO") {
-                element.style.animation = "animationcubeSO 3s linear alternate infinite";
-            } else {
-                element.style.animation = "animationcubeSE 3s linear alternate infinite";
-            }
-            
-            
-            document.getElementById('coordonnes').value = x + ', ' + y + ', ' + hauteur + ', ' + largeur;            
-        }
-        
-        function sourisout(event)
-        {
-            var element = event.target.children.item(0);
-            element.style.animation = "none";
-        }
-        
-    </script>
     <title>PorteFolio</title>
 </head>
     <body>
     <div id="conteneur">
         <nav id="banniere">
-            <div id="canvas">
-                <div onmouseover="sourison(event)" onmouseleave="sourisout(event)" id="canNO">
-                    <article id="NO" class="test"></article>
-                </div>
-                <div onmouseover="sourison(event)" onmouseleave="sourisout(event)" id="canNE">
-                    <article id="NE" class="test"></article>
-                </div>
-                <div onmouseover="sourison(event)" onmouseleave="sourisout(event)" id="canSO">
-                    <article id="SO" class="test"></article>
-                </div>
-                <div onmouseover="sourison(event)" onmouseleave="sourisout(event)" id="canSE">
-                    <article id="SE" class="test"></article>
-                </div>
-            </div>
+            <canvas id="canvas"></canvas>
             <article id="textbanniere">
                 <h1><br>Hello World !</h1>
                 <h2>Peter Nanot</h2>
                 <p>
-                    Développeur Web.
+                    Laisses appuyé sur la souri pour faire bouger l'image.<br>
+                    Relache la souri pour stopper l'animation.<br>
+                    Sors de l'image en fond pour renvoyer l'image à sa position initiale.
                 </p>
-            <div id="info">
-
-                Coordonnées de la souris : <input type="text" id="coordonnes" value="inconnues" readonly="readonly" />
-
-            </div>
+                <input id="test" width="200">
             </article>
             
         <header id="haut">
@@ -167,4 +122,202 @@
         </footer>
 
     </div>
+        <script> 
+        
+        var canvas = document.getElementById('canvas');
+        var banniere = document.getElementById('banniere');
+        var test = document.getElementById('test');
+        var ctx = canvas.getContext('2d');
+        var raf;
+            
+        canvas.height = banniere.clientHeight;          // Association de la résolution du canvas
+        canvas.width = banniere.clientWidth;            // à celle de l'image de fond
+        var hauteurCan = canvas.height;                 // Récupération des données.
+        var largeurCan = canvas.width;
+            
+        var imgCube = new Image();                      // Déclaration de l'image à transformer
+        imgCube.src = "theme/logo-dl-CV-button.png";
+        var hauteurImg = imgCube.height;                // Récupération de ses dimensions
+        var largeurImg = imgCube.width
+        
+        var nbrCubesX = 1;                             // Nombre de cube à découper sur la largeur et la hauteur.
+        var nbrCubesY = 1;
+        var hauteurCube = hauteurImg / nbrCubesY;
+        var largeurCube = largeurImg / nbrCubesX;
+            
+        var departPosX = (largeurCan / 2) - (largeurImg / 2);   // Définition de la position de départ
+        var departPosY = (hauteurCan / 2) - (hauteurImg / 2);   // de la photo à animer.
+        var listCubes = [];
+                
+        function Cube(srcPosX,srcPosY,startPosX,startPosY) {                // Constructeur d'un cube
+            this.srcPosX = srcPosX;
+            this.srcPosY = srcPosY;
+            this.startPosX = startPosX;
+            this.startPosY = startPosY;
+            this.currentPosX = startPosX;
+            this.currentPosY = startPosY;
+            this.vx = 5;
+            this.vy = 5;
+            this.drawCube = drawCube;
+            this.drawCubeHere = drawCubeHere;
+        }
+        
+        function pushCubes() {                          // Fonction servant à initialiser la liste des cubes pour l'animation.
+            var listLen = listCubes.length;
+            if (listLen !== 0) {                        // On vérifie que la liste soit bien vide.
+                listCubes = [];
+            }
+            for (var i = 0; i < nbrCubesY; i++) {       // Chaque cube de chaque ligne est ajouté à la liste.
+                for (var j = 0; j < nbrCubesX; j++) {
+                    var srcX = j * largeurCube;
+                    var srcY = i * hauteurCube;
+                    listCubes.push(new Cube(srcX,
+                                            srcY,
+                                            departPosX + srcX,
+                                            departPosY + srcY));
+                }
+            }
+            initCube();
+        }
+                
+        function initCube() {                           // Initialise la liste de cube, NON FONCTIONNEL !
+            var listLen = listCubes.length;
+            for (var i = 0; i < listLen ; i++) {
+                ctx.drawImage(imgCube,
+                              listCubes[i].srcPosX,listCubes[i].srcPosY,
+                              largeurCube,hauteurCube,
+                              departPosX + listCubes[i].srcPosX,departPosY + listCubes[i].srcPosY,
+                              largeurCube,hauteurCube);
+                imgCube.style.display = 'none';
+            }
+        }
+        
+        function drawCube() {                           // Méthode du cube pour se dessiner à sa nouvelle position.
+                ctx.clearRect(this.currentPosX, this.currentPosY, largeurCube, hauteurCube);
+                var newPosX = this.currentPosX + this.vx;
+                var newPosY = this.currentPosY + this.vy;
+                if (inCanvas(newPosX, newPosY)) {
+                    this.currentPosX = newPosX;
+                    this.currentPosY = newPosY;
+                } else {
+                    this.vx = -this.vx;
+                    this.vy = -this.vy;
+                }
+                ctx.drawImage(imgCube,
+                              this.srcPosX,this.srcPosY,
+                              largeurCube,hauteurCube,
+                              this.currentPosX,this.currentPosY,
+                              largeurCube,hauteurCube);
+                imgCube.style.display = 'none';
+        }
+        
+        function drawCubeHere(posX,posY) {
+            ctx.drawImage(imgCube,
+                          this.srcPosX,this.srcPosY,
+                          largeurCube,hauteurCube,
+                          posX,posY,
+                          largeurCube,hauteurCube);
+            imgCube.style.display = 'none';
+        }
+        
+        function inCanvas(newPosX, newPosY) {           // On vérifie si les nouvelles positions sont dans le canvas.
+            if ((newPosX < 0) || (newPosY < 0) || ((newPosY + hauteurCube) > hauteurCan) || ((newPosX + largeurCube) > largeurCan))  {
+                return false;                           // Les deux positions sont bloquées si une seule réponds négativement !
+            } else {
+                return true;
+            }
+        }
+        
+        function draw() {                               // Fonction qui lance la méthode .drawCube sur
+            var listLen = listCubes.length;             // chaque cube de la liste.
+            for (var i = 0; i < listLen; i++) {
+                listCubes[i].drawCube();
+            }
+            raf = requestAnimationFrame(draw);
+        }
+            
+        function drawBackCubes() {                       // Renvoie chacun des cubes à sa position d'origine.
+            var listLen = listCubes.length;
+            if (inStartPos(listLen)) {
+                test.value = inStartPos(listLen);
+                cancelAnimationFrame(raf);
+            } else {
+                test.value = inStartPos(listLen);
+                for (var i = 0; i < listLen ; i++) {
+                    var cube = listCubes[i];
+                    var posX = cube.currentPosX;
+                    var posY = cube.currentPosY;
+                    var targetX = cube.startPosX;
+                    var targetY = cube.startPosY;
+                    if (posX < targetX && posY < targetY) {
+                        ctx.clearRect(cube.currentPosX, cube.currentPosY, largeurCube, hauteurCube);
+                        cube.currentPosX += 1;
+                        cube.currentPosY += 1;
+                        cube.drawCubeHere(cube.currentPosX,cube.currentPosY);
+                    } else if (posX > targetX && posY > targetY) {
+                        ctx.clearRect(cube.currentPosX, cube.currentPosY, largeurCube, hauteurCube);
+                        cube.currentPosX -= 1;
+                        cube.currentPosY -= 1;
+                        cube.drawCubeHere(cube.currentPosX,cube.currentPosY);
+                    } else if (posX < targetX && posY > targetY) {
+                        ctx.clearRect(cube.currentPosX, cube.currentPosY, largeurCube, hauteurCube);
+                        cube.currentPosX += 1;
+                        cube.currentPosY -= 1;
+                        cube.drawCubeHere(cube.currentPosX,cube.currentPosY);
+                    } else if (posX > targetX && posY < targetY) {
+                        ctx.clearRect(cube.currentPosX, cube.currentPosY, largeurCube, hauteurCube);
+                        cube.currentPosX -= 1;
+                        cube.currentPosY += 1;
+                        cube.drawCubeHere(cube.currentPosX,cube.currentPosY);
+                    } else if (posX === targetX && posY < targetY) {
+                        ctx.clearRect(cube.currentPosX, cube.currentPosY, largeurCube, hauteurCube);
+                        cube.currentPosY += 1;
+                        cube.drawCubeHere(cube.currentPosX,cube.currentPosY);
+                    } else if (posX === targetX && posY > targetY) {
+                        ctx.clearRect(cube.currentPosX, cube.currentPosY, largeurCube, hauteurCube);
+                        cube.currentPosY -= 1;
+                        cube.drawCubeHere(cube.currentPosX,cube.currentPosY);
+                    } else if (posX < targetX && posY === targetY) {
+                        ctx.clearRect(cube.currentPosX, cube.currentPosY, largeurCube, hauteurCube);
+                        cube.currentPosX += 1;
+                        cube.drawCubeHere(cube.currentPosX,cube.currentPosY);
+                    } else {
+                        ctx.clearRect(cube.currentPosX, cube.currentPosY, largeurCube, hauteurCube);
+                        cube.currentPosX -= 1;
+                        cube.drawCubeHere(cube.currentPosX,cube.currentPosY);
+                    }
+                }
+            }
+            raf = requestAnimationFrame(drawBackCubes);
+        }
+            
+        
+        
+        function inStartPos(listLen) {                     // Reponds "false" si un cube de la liste n'est pas à sa position d'origine.
+            for (var i = 0; i < listLen; i++) {
+                if (listCubes[i].currentPosX !== listCubes[i].startPosX || listCubes[i].currentPosY !== listCubes[i].startPosY)
+                    return false;
+            }
+            return true;
+        }
+        
+        /*canvas.addEventListener('mousemove', function(event) {
+            var cursX = event.pageX;
+            var cursY = event.pageY;
+            draw();
+            test.value = cursX + ", " + cursY + ", " + departPosX + ", " + departPosY;
+        });*/
+            
+        canvas.addEventListener('mouseout', drawBackCubes);
+        canvas.addEventListener('mouseenter', function() {
+            cancelAnimationFrame(raf);
+        })
+        canvas.addEventListener('mousedown', draw);
+        canvas.addEventListener('mouseup', function() {
+            cancelAnimationFrame(raf);
+        })
+        
+        pushCubes();
+        
+    </script>
     </body>
