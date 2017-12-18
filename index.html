@@ -136,28 +136,31 @@
         var largeurCan = canvas.width;
             
         var imgCube = new Image();                      // Déclaration de l'image à transformer
-        imgCube.src = "theme/logo-dl-CV-button.png";
+        imgCube.src = "theme/calque-test.png";
         var hauteurImg = imgCube.height;                // Récupération de ses dimensions
         var largeurImg = imgCube.width
         
-        var nbrCubesX = 1;                             // Nombre de cube à découper sur la largeur et la hauteur.
-        var nbrCubesY = 1;
+        var nbrCubesX = 10;                             // Nombre de cube à découper sur la largeur et la hauteur.
+        var nbrCubesY = 10;
         var hauteurCube = hauteurImg / nbrCubesY;
         var largeurCube = largeurImg / nbrCubesX;
             
-        var departPosX = (largeurCan / 2) - (largeurImg / 2);   // Définition de la position de départ
-        var departPosY = (hauteurCan / 2) - (hauteurImg / 2);   // de la photo à animer.
+        var middleCanX = largeurCan / 2;
+        var middleCanY = hauteurCan / 2;
+            
+        var departPosX = middleCanX - (largeurImg / 2);   // Définition de la position de départ
+        var departPosY = middleCanY - (hauteurImg / 2);   // de la photo à animer.
         var listCubes = [];
                 
-        function Cube(srcPosX,srcPosY,startPosX,startPosY) {                // Constructeur d'un cube
+        function Cube(srcPosX,srcPosY,startPosX,startPosY,vx,vy) {                // Constructeur d'un cube
             this.srcPosX = srcPosX;
             this.srcPosY = srcPosY;
             this.startPosX = startPosX;
             this.startPosY = startPosY;
             this.currentPosX = startPosX;
             this.currentPosY = startPosY;
-            this.vx = 5;
-            this.vy = 5;
+            this.vx = vx;
+            this.vy = vy;
             this.drawCube = drawCube;
             this.drawCubeHere = drawCubeHere;
         }
@@ -171,10 +174,25 @@
                 for (var j = 0; j < nbrCubesX; j++) {
                     var srcX = j * largeurCube;
                     var srcY = i * hauteurCube;
-                    listCubes.push(new Cube(srcX,
-                                            srcY,
-                                            departPosX + srcX,
-                                            departPosY + srcY));
+                    var posX = departPosX + srcX;
+                    var posY = departPosY + srcY;
+                    var vx; var vy;
+                    if ( posX < middleCanX && posY < middleCanY) {
+                        vx = -1;
+                        vy = -1;
+                    } else if ( posX >= middleCanX && posY < middleCanY) {
+                        vx = 1;
+                        vy = -1;
+                    } else if( posX < middleCanX && posY >= middleCanY) {
+                        vx = -1;
+                        vy = 1;
+                    } else {
+                        vx = 1;
+                        vy = 1;
+                    }
+                    listCubes.push(new Cube(srcX, srcY,
+                                            posX, posY,
+                                            vx, vy));
                 }
             }
             initCube();
@@ -183,45 +201,55 @@
         function initCube() {                           // Initialise la liste de cube, NON FONCTIONNEL !
             var listLen = listCubes.length;
             for (var i = 0; i < listLen ; i++) {
+                ctx.beginPath();
                 ctx.drawImage(imgCube,
                               listCubes[i].srcPosX,listCubes[i].srcPosY,
                               largeurCube,hauteurCube,
                               departPosX + listCubes[i].srcPosX,departPosY + listCubes[i].srcPosY,
                               largeurCube,hauteurCube);
                 imgCube.style.display = 'none';
+                ctx.closePath();
             }
         }
         
         function drawCube() {                           // Méthode du cube pour se dessiner à sa nouvelle position.
                 ctx.clearRect(this.currentPosX, this.currentPosY, largeurCube, hauteurCube);
-                var newPosX = this.currentPosX + this.vx;
-                var newPosY = this.currentPosY + this.vy;
+                var difX = middleCanX - this.currentPosX;
+                var difY = middleCanY - this.currentPosY;
+                var multiplicateurX = Math.abs(difX) * 0.03;
+                var multiplicateurY = Math.abs(difY) * 0.03;
+                var newPosX = this.currentPosX + this.vx * multiplicateurX;
+                var newPosY = this.currentPosY + this.vy * multiplicateurY;
                 if (inCanvas(newPosX, newPosY)) {
                     this.currentPosX = newPosX;
                     this.currentPosY = newPosY;
-                } else {
-                    this.vx = -this.vx;
-                    this.vy = -this.vy;
                 }
+                ctx.beginPath();
                 ctx.drawImage(imgCube,
                               this.srcPosX,this.srcPosY,
                               largeurCube,hauteurCube,
                               this.currentPosX,this.currentPosY,
                               largeurCube,hauteurCube);
                 imgCube.style.display = 'none';
+                ctx.closePath();
         }
         
-        function drawCubeHere(posX,posY) {
+        function drawCubeHere(posX,posY) {              // Dessine le cube donné à la position désirée.
+            ctx.beginPath();
             ctx.drawImage(imgCube,
                           this.srcPosX,this.srcPosY,
                           largeurCube,hauteurCube,
                           posX,posY,
                           largeurCube,hauteurCube);
             imgCube.style.display = 'none';
+            ctx.closePath();
         }
         
         function inCanvas(newPosX, newPosY) {           // On vérifie si les nouvelles positions sont dans le canvas.
-            if ((newPosX < 0) || (newPosY < 0) || ((newPosY + hauteurCube) > hauteurCan) || ((newPosX + largeurCube) > largeurCan))  {
+            if ((newPosX < 0) || 
+                (newPosY < 0) || 
+                ((newPosY + hauteurCube) > hauteurCan) || 
+                ((newPosX + largeurCube) > largeurCan)) {
                 return false;                           // Les deux positions sont bloquées si une seule réponds négativement !
             } else {
                 return true;
@@ -239,7 +267,6 @@
         function drawBackCubes() {                       // Renvoie chacun des cubes à sa position d'origine.
             var listLen = listCubes.length;
             if (inStartPos(listLen)) {
-                test.value = inStartPos(listLen);
                 cancelAnimationFrame(raf);
             } else {
                 test.value = inStartPos(listLen);
@@ -249,41 +276,46 @@
                     var posY = cube.currentPosY;
                     var targetX = cube.startPosX;
                     var targetY = cube.startPosY;
+                    var speedX = 1;
+                    var speedY = 1;
+                    if (Math.abs(targetX - posX) < 1 && Math.abs(targetY - posY) < 1) {
+                        cancelAnimationFrame(raf);
+                    }
                     if (posX < targetX && posY < targetY) {
                         ctx.clearRect(cube.currentPosX, cube.currentPosY, largeurCube, hauteurCube);
-                        cube.currentPosX += 1;
-                        cube.currentPosY += 1;
+                        cube.currentPosX += speedX;
+                        cube.currentPosY += speedY;
                         cube.drawCubeHere(cube.currentPosX,cube.currentPosY);
                     } else if (posX > targetX && posY > targetY) {
                         ctx.clearRect(cube.currentPosX, cube.currentPosY, largeurCube, hauteurCube);
-                        cube.currentPosX -= 1;
-                        cube.currentPosY -= 1;
+                        cube.currentPosX -= speedX;
+                        cube.currentPosY -= speedY;
                         cube.drawCubeHere(cube.currentPosX,cube.currentPosY);
                     } else if (posX < targetX && posY > targetY) {
                         ctx.clearRect(cube.currentPosX, cube.currentPosY, largeurCube, hauteurCube);
-                        cube.currentPosX += 1;
-                        cube.currentPosY -= 1;
+                        cube.currentPosX += speedX;
+                        cube.currentPosY -= speedY;
                         cube.drawCubeHere(cube.currentPosX,cube.currentPosY);
                     } else if (posX > targetX && posY < targetY) {
                         ctx.clearRect(cube.currentPosX, cube.currentPosY, largeurCube, hauteurCube);
-                        cube.currentPosX -= 1;
-                        cube.currentPosY += 1;
+                        cube.currentPosX -= speedX;
+                        cube.currentPosY += speedY;
                         cube.drawCubeHere(cube.currentPosX,cube.currentPosY);
                     } else if (posX === targetX && posY < targetY) {
                         ctx.clearRect(cube.currentPosX, cube.currentPosY, largeurCube, hauteurCube);
-                        cube.currentPosY += 1;
+                        cube.currentPosY += speedY;
                         cube.drawCubeHere(cube.currentPosX,cube.currentPosY);
                     } else if (posX === targetX && posY > targetY) {
                         ctx.clearRect(cube.currentPosX, cube.currentPosY, largeurCube, hauteurCube);
-                        cube.currentPosY -= 1;
+                        cube.currentPosY -= speedY;
                         cube.drawCubeHere(cube.currentPosX,cube.currentPosY);
                     } else if (posX < targetX && posY === targetY) {
                         ctx.clearRect(cube.currentPosX, cube.currentPosY, largeurCube, hauteurCube);
-                        cube.currentPosX += 1;
+                        cube.currentPosX += speedX;
                         cube.drawCubeHere(cube.currentPosX,cube.currentPosY);
                     } else {
                         ctx.clearRect(cube.currentPosX, cube.currentPosY, largeurCube, hauteurCube);
-                        cube.currentPosX -= 1;
+                        cube.currentPosX -= speedX;
                         cube.drawCubeHere(cube.currentPosX,cube.currentPosY);
                     }
                 }
@@ -311,11 +343,11 @@
         canvas.addEventListener('mouseout', drawBackCubes);
         canvas.addEventListener('mouseenter', function() {
             cancelAnimationFrame(raf);
-        })
+        });
         canvas.addEventListener('mousedown', draw);
         canvas.addEventListener('mouseup', function() {
             cancelAnimationFrame(raf);
-        })
+        });
         
         pushCubes();
         
