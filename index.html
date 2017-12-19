@@ -195,10 +195,10 @@
                         } else {
                             listeDeCubes = listCubes2;
                         }
-                        var srcX = j * largeurCube;
-                        var srcY = i * hauteurCube;
-                        var posX = departPosX + srcX;
-                        var posY = departPosY + srcY;
+                        var srcX = Math.round(j * largeurCube);
+                        var srcY = Math.round(i * hauteurCube);
+                        var posX = Math.round(departPosX + srcX);
+                        var posY = Math.round(departPosY + srcY);
                         var vx; var vy;
                         if ( posX < middleCanX && posY < middleCanY) {
                             vx = -1;
@@ -243,8 +243,9 @@
                     var difY = middleCanY - this.currentPosY;
                     var multiplicateurX = Math.abs(difX) * 0.03;
                     var multiplicateurY = Math.abs(difY) * 0.03;
-                    var newPosX = this.currentPosX + this.vx * multiplicateurX;
-                    var newPosY = this.currentPosY + this.vy * multiplicateurY;
+                    var newPosX = Math.round(this.currentPosX + this.vx * multiplicateurX);
+                    var newPosY = Math.round(this.currentPosY + this.vy * multiplicateurY);
+                    test.value = newPosX + ', ' + newPosY + ', ' + multiplicateurX + ', ' + multiplicateurY;
                     if (inCanvas(newPosX, newPosY)) {
                         this.currentPosX = newPosX;
                         this.currentPosY = newPosY;
@@ -294,7 +295,6 @@
                 if (inStartPos(listLen)) {
                     cancelAnimationFrame(raf);
                 } else {
-                    test.value = inStartPos(listLen);
                     for (var i = 0; i < listLen ; i++) {
                         var cube = listCubes[i];
                         var posX = cube.currentPosX;
@@ -344,8 +344,9 @@
                             cube.drawCubeHere(cube.currentPosX,cube.currentPosY);
                         }
                     }
+                    test.value = posX + ', ' + targetX + ', ' + posY + ', ' + targetY;
+                    raf = requestAnimationFrame(drawBackCubes);
                 }
-                raf = requestAnimationFrame(drawBackCubes);
             }
 
 
