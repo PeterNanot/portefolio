@@ -71,6 +71,11 @@ body        {
     left: 0;
 }
 
+#canvas2             {
+    position: absolute;
+    left: 0;
+}
+
 #textbanniere        {
     position: absolute;
     top: 0;
